@@ -1,6 +1,7 @@
 package zerobase.weather.service;
 
 
+
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -15,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 import zerobase.weather.WeatherApplication;
 import zerobase.weather.domain.DateWeather;
 import zerobase.weather.domain.Diary;
-import zerobase.weather.error.InvalidDate;
 import zerobase.weather.repository.DateWeatherRepository;
 import zerobase.weather.repository.DiaryRepository;
 
@@ -57,10 +57,12 @@ public class DiaryService {
     public void createDiary(LocalDate date, String text){
         logger.info("started to create diary");
 
+
         // 날씨 데이터 가져오기 ( API 에서 가져오기 ? || DB 에서 가져오기
         DateWeather dateWeather = getDateWeather(date);
         //파싱된 데이터 + 일기 값 db에 넣기
         Diary nowDiary = new Diary();
+
         nowDiary.setDateWeather(dateWeather);
         nowDiary.setText(text);
         diaryRepository.save(nowDiary);
@@ -74,6 +76,7 @@ public class DiaryService {
 
         // 받아온 날씨 json 파싱하기
         Map<String, Object> parseWeather =  parseWeather(weatherData);
+
         DateWeather dateWeather = new DateWeather();
         dateWeather.setDate(LocalDate.now());
         dateWeather.setWeather(parseWeather.get("main").toString());
@@ -167,7 +170,7 @@ public class DiaryService {
         JSONObject mainData = (JSONObject) jsonObject.get("main");
         resultMap.put("temp", mainData.get("temp"));
         JSONArray weatherArray = (JSONArray) jsonObject.get("weather");
-        JSONObject weatherData = (JSONObject) weatherArray.get(0);
+        JSONObject weatherData = (JSONObject) weatherArray.get(1);
         resultMap.put("main",weatherData.get("main"));
         resultMap.put("icon",weatherData.get("icon"));
 
